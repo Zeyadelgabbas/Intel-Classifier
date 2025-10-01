@@ -2,6 +2,6 @@ fastapi
 uvicorn
 joblib
 python-dotenv
-tensorflow
+tensorflow == 2.19.0
 pandas
-
+python-multipart

@@ -1,12 +1,13 @@
-from fastapi import FastAPI , Depends , HTTPException,UploadFile,File,BackgroundTasks
+from fastapi import FastAPI , Depends , HTTPException,UploadFile,File
 from fastapi.security import APIKeyHeader
 import uvicorn
 import os 
 from Src.inference import ImageClassifier
 from Src.logger import get_logger
-from Src.config import API_SECRET_KEY , APP_NAME , VERSION , DOWNLOADED_IMAGES_PATHS , ensure_directories
+from Src.config import API_SECRET_KEY , APP_NAME , VERSION , DOWNLOADED_IMAGES_PATHS 
 from Src.schemas import PredictionsResponse
 from typing import List
+from Src.utils import ensure_directories , delete_files
 logging = get_logger(__name__)
 
 
@@ -67,6 +68,7 @@ async def classify_batch_disk(files:List[UploadFile] = File(...),api_key :str= D
                 images_paths.append(file_path)
 
             predictions = classifier.predict_batch(images_paths)
+            delete_files(images_paths)
             return predictions
         except HTTPException:
             raise
